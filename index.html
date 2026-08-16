@@ -396,12 +396,23 @@
                     answerType: "tag",
                     displayHTML: "<p>This is a standard paragraph.</p>"
                 },
-
+                {
+                    prompt: "Which attribute declared on the <html> root element specifies that the primary language of the web page is English for search engines and screen readers?",
+                    correctTag: "lang=\"en\"",
+                    answerType: "attribute",
+                    displayHTML: "<html lang=\"en\">\n  <head></head>\n  <body></body>\n</html>"
+                },
                 {
                     prompt: "Create a clickable hyperlink to another web page.",
                     correctTag: "<a>",
                     answerType: "tag",
                     displayHTML: "<a href=\"https://example.com\">Click Here</a>"
+                },
+                {
+                    prompt: "Which critical tag must be declared near the very top of the <head> section so the browser decodes text and special characters correctly before parsing the title?",
+                    correctTag: "<meta charset=\"utf-8\">",
+                    answerType: "tag",
+                    displayHTML: "<head>\n  <meta charset=\"utf-8\">\n  <title>My Web Page</title>\n</head>"
                 },
 
                 {
@@ -438,6 +449,12 @@
                     answerType: "attribute",
                     displayHTML: "<img src=\"logo.png\" alt=\"Company Logo\">"
                 },
+                {
+                    prompt: "What term refers to the rules, guidelines, and conventions that define how HTML tags, attributes, and values must be structured?",
+                    correctTag: "syntax",
+                    answerType: "text",
+                    displayHTML: "<!-- Correct HTML syntax ensures functional web pages -->"
+                },
 
                 {
                     prompt: "Create a block-level container that starts on a new line.",
@@ -447,10 +464,10 @@
                 },
 
                 {
-                    prompt: "Create an inline element to wrap and style specific text.",
+                    prompt: "Which inline element wraps a specific piece of text so you can apply a custom background color with CSS?",
                     correctTag: "<span>",
                     answerType: "tag",
-                    displayHTML: "<p>This is <span>inline text</span>.</p>"
+                    displayHTML: "<p>This text has a <span style=\"background-color: yellow;\">yellow background</span>.</p>"
                 },
                 {
                     prompt: "Define SEO keywords in a meta tag attribute.",
