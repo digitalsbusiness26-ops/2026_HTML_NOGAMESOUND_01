@@ -110,6 +110,17 @@
             background-color: #218838;
         }
 
+        #resetButton {
+            background-color: #dc3545;
+            margin-top: 15px;
+            font-size: 0.7em;
+            padding: 8px 12px;
+        }
+
+        #resetButton:hover {
+            background-color: #bd2130;
+        }
+
         .feedback-box {
             min-height: 20px;
             margin-bottom: 20px;
@@ -245,7 +256,6 @@
 
         <p class="instructions">
             Type the HTML tag (e.g., &lt;p&gt;) or attribute (e.g., src) to make things happen!
-            Click "Next Challenge" to start.
         </p>
 
         <div class="challenge-box">
@@ -278,118 +288,83 @@
             <span id="score">0</span>
         </div>
 
+        <div>
+            <button id="resetButton">Reset Progress</button>
+        </div>
+
     </div>
 
     <script>
 
         document.addEventListener('DOMContentLoaded', () => {
 
-            const challengeText =
-                document.getElementById('challenge-text');
+            const challengeText = document.getElementById('challenge-text');
+            const tagInput = document.getElementById('tagInput');
+            const checkButton = document.getElementById('checkButton');
+            const nextButton = document.getElementById('nextButton');
+            const resetButton = document.getElementById('resetButton');
+            const feedbackBox = document.getElementById('feedback-box');
+            const displayContent = document.getElementById('display-content');
+            const scoreSpan = document.getElementById('score');
 
-            const tagInput =
-                document.getElementById('tagInput');
-
-            const checkButton =
-                document.getElementById('checkButton');
-
-            const nextButton =
-                document.getElementById('nextButton');
-
-            const feedbackBox =
-                document.getElementById('feedback-box');
-
-            const displayContent =
-                document.getElementById('display-content');
-
-            const scoreSpan =
-                document.getElementById('score');
-
-
-            let currentChallengeIndex = -1;
+            let currentChallengeIndex = 0;
             let score = 0;
 
-
-                /*
-                * answerType:
-                *
-                * "tag" = student should enter a tag.
-                * Example: h1 or <h1>
-                *
-                * "attribute" = student should enter only the
-                * attribute without < >.
-                * Example: src, alt, class
-                *
-                * "doctype" = student must enter the complete
-                * <!DOCTYPE html>
-                */
-
-
             const challenges = [
-
                 {
                     prompt: "Make this text a very important heading.",
                     correctTag: "<h1>",
                     answerType: "tag",
                     displayHTML: "<h1>VERY IMPORTANT HEADING</h1>"
                 },
-
                 {
                     prompt: "Declare the document type for modern HTML5.",
                     correctTag: "<!DOCTYPE html>",
                     answerType: "doctype",
                     displayHTML: "<!DOCTYPE html>"
                 },
-
                 {
                     prompt: "Define the root element that wraps all page content.",
                     correctTag: "<html>",
                     answerType: "tag",
                     displayHTML: "<html lang=\"en\">...</html>"
                 },
-
                 {
                     prompt: "Create standard opening and closing tags around content.",
                     correctTag: "<tag>",
                     answerType: "tag",
                     displayHTML: "<tag>Content goes here</tag>"
                 },
-
                 {
                     prompt: "Define the head section for page metadata and scripts.",
                     correctTag: "<head>",
                     answerType: "tag",
                     displayHTML: "<head><title>Page Title</title></head>"
                 },
-
                 {
                     prompt: "Set the web page title shown in the browser tab.",
                     correctTag: "<title>",
                     answerType: "tag",
                     displayHTML: "<title>My Awesome Website</title>"
                 },
-
                 {
                     prompt: "Add hidden machine-readable metadata about the page.",
                     correctTag: "<meta>",
                     answerType: "tag",
                     displayHTML: "<meta name=\"author\" content=\"John Doe\">"
                 },
-
                 {
                     prompt: "Define the main container for all visible page content.",
                     correctTag: "<body>",
                     answerType: "tag",
                     displayHTML: "<body><h1>Hello World</h1></body>"
                 },
-
                 {
                     prompt: "Set the character encoding to UTF-8.",
                     correctTag: "charset=\"utf-8\"",
                     answerType: "attribute",
                     displayHTML: "<meta charset=\"utf-8\">"
                 },
-
                 {
                     prompt: "Write a standard paragraph element using correct HTML syntax.",
                     correctTag: "<p>",
@@ -414,49 +389,42 @@
                     answerType: "tag",
                     displayHTML: "<head>\n  <meta charset=\"utf-8\">\n  <title>My Web Page</title>\n</head>"
                 },
-
                 {
                     prompt: "Insert a void (empty) line break element.",
                     correctTag: "<br>",
                     answerType: "tag",
                     displayHTML: "First line<br>Second line"
                 },
-
                 {
                     prompt: "Embed an image into the document.",
                     correctTag: "<img>",
                     answerType: "tag",
                     displayHTML: "<img src=\"photo.jpg\" alt=\"A sunny landscape\">"
                 },
-
                 {
-                prompt: "Which tag lets you add a note explaining that the browser reads code from top to bottom without rendering text on the page?",
-                correctTag: "<!-- -->",
-                answerType: "tag",
-                displayHTML: "<!-- Parsed sequentially from top to bottom -->"
+                    prompt: "Which tag lets you add a note explaining that the browser reads code from top to bottom without rendering text on the page?",
+                    correctTag: "<!-- -->",
+                    answerType: "tag",
+                    displayHTML: "<!-- Parsed sequentially from top to bottom -->"
                 },
-
                 {
                     prompt: "Specify the image file location using the source attribute.",
                     correctTag: "src",
                     answerType: "attribute",
                     displayHTML: "<img src=\"picture.jpg\">"
                 },
-
                 {
                     prompt: "Add alternative text for screen readers and missing images.",
                     correctTag: "alt",
                     answerType: "attribute",
                     displayHTML: "<img src=\"logo.png\" alt=\"Company Logo\">"
                 },
-
                 {
                     prompt: "Create a block-level container that starts on a new line.",
                     correctTag: "<div>",
                     answerType: "tag",
                     displayHTML: "<div>Block level container</div>"
                 },
-
                 {
                     prompt: "Which inline element wraps a specific piece of text so you can apply a custom background color with CSS?",
                     correctTag: "<span>",
@@ -469,266 +437,139 @@
                     answerType: "attribute",
                     displayHTML: "<meta name=\"keywords\" content=\"web, dev, html\">"
                 },
-
                 {
                     prompt: "Provide a page summary description for search results.",
                     correctTag: "name=\"description\"",
                     answerType: "attribute",
                     displayHTML: "<meta name=\"description\" content=\"Learn HTML basics.\">"
                 }
-
             ];
 
+            function loadSavedProgress() {
+                const savedScore = localStorage.getItem('htmlExplorerScore');
+                const savedIndex = localStorage.getItem('htmlExplorerIndex');
 
-            function shuffleArray(array) {
-
-                for (let i = array.length - 1; i > 0; i--) {
-
-                    const j =
-                        Math.floor(Math.random() * (i + 1));
-
-                    [array[i], array[j]] =
-                        [array[j], array[i]];
+                if (savedScore !== null) {
+                    score = parseInt(savedScore, 10);
+                }
+                if (savedIndex !== null) {
+                    currentChallengeIndex = parseInt(savedIndex, 10);
                 }
             }
 
-
-            function updateScoreDisplay() {
-
-                scoreSpan.textContent =
-                    `${score} | Question: ${currentChallengeIndex + 1} / ${challenges.length}`;
-
+            function saveProgress() {
+                localStorage.setItem('htmlExplorerScore', score);
+                localStorage.setItem('htmlExplorerIndex', currentChallengeIndex);
             }
 
+            function updateScoreDisplay() {
+                scoreSpan.textContent = `${score} | Question: ${currentChallengeIndex + 1} / ${challenges.length}`;
+            }
 
             function loadChallenge() {
-
-                currentChallengeIndex++;
-
                 if (currentChallengeIndex >= challenges.length) {
-
-                    challengeText.textContent =
-                        "Game Over! You completed all challenges!";
-
+                    challengeText.textContent = "Game Over! You completed all challenges!";
                     tagInput.disabled = true;
                     checkButton.disabled = true;
                     nextButton.disabled = true;
-
-                    displayContent.innerHTML =
-                        "<p>Great job exploring HTML tags!</p>";
-
+                    displayContent.innerHTML = "<p>Great job exploring HTML tags!</p>";
                     feedbackBox.textContent = "";
-
+                    updateScoreDisplay();
                     return;
                 }
 
+                const challenge = challenges[currentChallengeIndex];
 
-                const challenge =
-                    challenges[currentChallengeIndex];
-
-
-                challengeText.textContent =
-                    challenge.prompt;
-
-
+                challengeText.textContent = challenge.prompt;
                 tagInput.value = "";
                 tagInput.disabled = false;
                 checkButton.disabled = false;
                 nextButton.disabled = true;
-
                 feedbackBox.textContent = "";
-
-                feedbackBox.className =
-                    "feedback-box";
-
+                feedbackBox.className = "feedback-box";
                 displayContent.innerHTML = "";
-
                 tagInput.focus();
 
                 updateScoreDisplay();
             }
 
-
             function checkTag() {
-
-                const userAnswer =
-                    tagInput.value.trim().toLowerCase();
-
-                const challenge =
-                    challenges[currentChallengeIndex];
-
-                const correctAnswer =
-                    challenge.correctTag.toLowerCase();
-
+                const userAnswer = tagInput.value.trim().toLowerCase();
+                const challenge = challenges[currentChallengeIndex];
+                const correctAnswer = challenge.correctTag.toLowerCase();
 
                 let isCorrect = false;
 
-
-                /*
-                 * TAG QUESTIONS
-                 *
-                 * Student can enter:
-                 *
-                 * h1
-                 *
-                 * OR
-                 *
-                 * <h1>
-                 */
-
                 if (challenge.answerType === "tag") {
-
                     let cleanedUserAnswer;
-
-                    if (
-                        userAnswer.startsWith("<") &&
-                        userAnswer.endsWith(">")
-                    ) {
-
-                        cleanedUserAnswer =
-                            userAnswer;
-
+                    if (userAnswer.startsWith("<") && userAnswer.endsWith(">")) {
+                        cleanedUserAnswer = userAnswer;
                     } else {
-
-                        cleanedUserAnswer =
-                            `<${userAnswer}>`;
+                        cleanedUserAnswer = `<${userAnswer}>`;
                     }
-
-                    isCorrect =
-                        cleanedUserAnswer === correctAnswer;
+                    isCorrect = cleanedUserAnswer === correctAnswer;
+                } else if (challenge.answerType === "attribute" || challenge.answerType === "doctype") {
+                    isCorrect = userAnswer === correctAnswer;
                 }
-
-
-                /*
-                 * ATTRIBUTE QUESTIONS
-                 *
-                 * Student enters:
-                 *
-                 * src
-                 * alt
-                 * class
-                 * charset="utf-8"
-                 * name="keywords"
-                 *
-                 * NO < >
-                 */
-
-                else if (challenge.answerType === "attribute") {
-
-                    isCorrect =
-                        userAnswer === correctAnswer;
-                }
-
-
-                /*
-                 * DOCTYPE QUESTION
-                 *
-                 * Student must enter:
-                 *
-                 * <!DOCTYPE html>
-                 */
-
-                else if (challenge.answerType === "doctype") {
-
-                    isCorrect =
-                        userAnswer === correctAnswer;
-                }
-
 
                 if (isCorrect) {
-
-                    feedbackBox.textContent =
-                        "Correct! 🎉";
-
-                    feedbackBox.className =
-                        "feedback-box feedback-correct";
-
+                    feedbackBox.textContent = "Correct! 🎉";
+                    feedbackBox.className = "feedback-box feedback-correct";
 
                     score++;
+                    saveProgress();
 
                     tagInput.disabled = true;
                     checkButton.disabled = true;
                     nextButton.disabled = false;
 
-
-                    displayContent.innerHTML =
-                        challenge.displayHTML;
-
+                    displayContent.innerHTML = challenge.displayHTML;
 
                     feedbackBox.classList.add("animate");
-
-
                     setTimeout(() => {
-
                         feedbackBox.classList.remove("animate");
-
                     }, 2000);
 
-
                     updateScoreDisplay();
-
                 } else {
-
-                    if (
-                        challenge.answerType === "attribute"
-                    ) {
-
-                        feedbackBox.textContent =
-                            "Try again! Enter the attribute without < >.";
-
-                    } else if (
-                        challenge.answerType === "doctype"
-                    ) {
-
-                        feedbackBox.textContent =
-                            "Try again! Enter the complete <!DOCTYPE html>.";
-
+                    if (challenge.answerType === "attribute") {
+                        feedbackBox.textContent = "Try again! Enter the attribute without < >.";
+                    } else if (challenge.answerType === "doctype") {
+                        feedbackBox.textContent = "Try again! Enter the complete <!DOCTYPE html>.";
                     } else {
-
-                        feedbackBox.textContent =
-                            "Try again! Enter the HTML tag, such as <p> or p.";
-
+                        feedbackBox.textContent = "Try again! Enter the HTML tag, such as <p> or p.";
                     }
 
-
-                    feedbackBox.className =
-                        "feedback-box feedback-wrong";
-
+                    feedbackBox.className = "feedback-box feedback-wrong";
                     tagInput.focus();
                 }
             }
 
+            checkButton.addEventListener("click", checkTag);
 
-            checkButton.addEventListener(
-                "click",
-                checkTag
-            );
+            nextButton.addEventListener("click", () => {
+                currentChallengeIndex++;
+                saveProgress();
+                loadChallenge();
+            });
 
-
-            nextButton.addEventListener(
-                "click",
-                loadChallenge
-            );
-
-
-            tagInput.addEventListener(
-                "keypress",
-                (event) => {
-
-                    if (
-                        event.key === "Enter" &&
-                        !checkButton.disabled
-                    ) {
-
-                        checkTag();
-                    }
-
+            resetButton.addEventListener("click", () => {
+                if (confirm("Are you sure you want to reset your score and start over?")) {
+                    localStorage.removeItem('htmlExplorerScore');
+                    localStorage.removeItem('htmlExplorerIndex');
+                    score = 0;
+                    currentChallengeIndex = 0;
+                    loadChallenge();
                 }
-            );
+            });
 
+            tagInput.addEventListener("keypress", (event) => {
+                if (event.key === "Enter" && !checkButton.disabled) {
+                    checkTag();
+                }
+            });
 
-            shuffleArray(challenges);
-
+            loadSavedProgress();
             loadChallenge();
 
         });
