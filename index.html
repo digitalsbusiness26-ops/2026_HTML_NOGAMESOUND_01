@@ -309,7 +309,6 @@
 
             let currentChallengeIndex = 0;
             let score = 0;
-            let isCurrentCompleted = false;
 
             const challenges = [
                 {
@@ -449,7 +448,6 @@
             function loadSavedProgress() {
                 const savedScore = localStorage.getItem('htmlExplorerScore');
                 const savedIndex = localStorage.getItem('htmlExplorerIndex');
-                const savedCompleted = localStorage.getItem('htmlExplorerCompleted');
 
                 if (savedScore !== null) {
                     score = parseInt(savedScore, 10);
@@ -457,15 +455,11 @@
                 if (savedIndex !== null) {
                     currentChallengeIndex = parseInt(savedIndex, 10);
                 }
-                if (savedCompleted !== null) {
-                    isCurrentCompleted = (savedCompleted === 'true');
-                }
             }
 
             function saveProgress() {
                 localStorage.setItem('htmlExplorerScore', score.toString());
                 localStorage.setItem('htmlExplorerIndex', currentChallengeIndex.toString());
-                localStorage.setItem('htmlExplorerCompleted', isCurrentCompleted.toString());
             }
 
             function updateScoreDisplay() {
@@ -486,15 +480,18 @@
                 }
 
                 const challenge = challenges[currentChallengeIndex];
+
+                // If score is greater than current index, user ALREADY answered this question before refreshing
+                const alreadyAnswered = score > currentChallengeIndex;
+
                 challengeText.textContent = challenge.prompt;
                 updateScoreDisplay();
 
-                if (isCurrentCompleted) {
+                if (alreadyAnswered) {
                     tagInput.value = challenge.correctTag;
                     tagInput.disabled = true;
                     checkButton.disabled = true;
                     nextButton.disabled = false;
-                    nextButton.removeAttribute('disabled');
                     feedbackBox.textContent = "Correct! 🎉";
                     feedbackBox.className = "feedback-box feedback-correct";
                     displayContent.innerHTML = challenge.displayHTML;
@@ -503,7 +500,6 @@
                     tagInput.disabled = false;
                     checkButton.disabled = false;
                     nextButton.disabled = true;
-                    nextButton.setAttribute('disabled', 'true');
                     feedbackBox.textContent = "";
                     feedbackBox.className = "feedback-box";
                     displayContent.innerHTML = "";
@@ -534,14 +530,12 @@
                     feedbackBox.textContent = "Correct! 🎉";
                     feedbackBox.className = "feedback-box feedback-correct";
 
-                    score++;
-                    isCurrentCompleted = true;
+                    score = Math.max(score, currentChallengeIndex + 1);
                     saveProgress();
 
                     tagInput.disabled = true;
                     checkButton.disabled = true;
                     nextButton.disabled = false;
-                    nextButton.removeAttribute('disabled');
 
                     displayContent.innerHTML = challenge.displayHTML;
 
@@ -570,19 +564,15 @@
             nextButton.addEventListener("click", () => {
                 if (nextButton.disabled) return;
                 currentChallengeIndex++;
-                isCurrentCompleted = false;
                 saveProgress();
                 loadChallenge();
             });
 
             resetButton.addEventListener("click", () => {
                 if (confirm("Are you sure you want to reset your score and start over?")) {
-                    localStorage.removeItem('htmlExplorerScore');
-                    localStorage.removeItem('htmlExplorerIndex');
-                    localStorage.removeItem('htmlExplorerCompleted');
+                    localStorage.clear();
                     score = 0;
                     currentChallengeIndex = 0;
-                    isCurrentCompleted = false;
                     loadChallenge();
                 }
             });
