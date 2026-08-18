@@ -458,14 +458,14 @@
                     currentChallengeIndex = parseInt(savedIndex, 10);
                 }
                 if (savedCompleted !== null) {
-                    isCurrentCompleted = savedCompleted === 'true';
+                    isCurrentCompleted = (savedCompleted === 'true');
                 }
             }
 
             function saveProgress() {
-                localStorage.setItem('htmlExplorerScore', score);
-                localStorage.setItem('htmlExplorerIndex', currentChallengeIndex);
-                localStorage.setItem('htmlExplorerCompleted', isCurrentCompleted);
+                localStorage.setItem('htmlExplorerScore', score.toString());
+                localStorage.setItem('htmlExplorerIndex', currentChallengeIndex.toString());
+                localStorage.setItem('htmlExplorerCompleted', isCurrentCompleted.toString());
             }
 
             function updateScoreDisplay() {
@@ -494,6 +494,7 @@
                     tagInput.disabled = true;
                     checkButton.disabled = true;
                     nextButton.disabled = false;
+                    nextButton.removeAttribute('disabled');
                     feedbackBox.textContent = "Correct! 🎉";
                     feedbackBox.className = "feedback-box feedback-correct";
                     displayContent.innerHTML = challenge.displayHTML;
@@ -502,6 +503,7 @@
                     tagInput.disabled = false;
                     checkButton.disabled = false;
                     nextButton.disabled = true;
+                    nextButton.setAttribute('disabled', 'true');
                     feedbackBox.textContent = "";
                     feedbackBox.className = "feedback-box";
                     displayContent.innerHTML = "";
@@ -539,6 +541,7 @@
                     tagInput.disabled = true;
                     checkButton.disabled = true;
                     nextButton.disabled = false;
+                    nextButton.removeAttribute('disabled');
 
                     displayContent.innerHTML = challenge.displayHTML;
 
@@ -565,6 +568,7 @@
             checkButton.addEventListener("click", checkTag);
 
             nextButton.addEventListener("click", () => {
+                if (nextButton.disabled) return;
                 currentChallengeIndex++;
                 isCurrentCompleted = false;
                 saveProgress();
